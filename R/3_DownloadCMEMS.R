@@ -9,41 +9,14 @@
 #
 #-------------------------------------------------------------------------------
 
-# 1. Set main data paths--------------------------------------------------------
+# 1.Prepare your dataset--------------------------------------------------------
 
-# 1.1. Write the path to the folder where you have your data:
-main_dir <- "C:/Users/david/OneDrive/Escritorio/EnviroRWorkshop_REDUCE"
-# If directory doesn't exist yet, create it:
-if (!dir.exists(main_dir)) dir.create(main_dir, recursive = TRUE)
-# Set as main directory (so you don't need to write the full path anymore)
-setwd(main_dir)
-
-
-# 1.2. Create data paths:
-# input is where you will save your data
-input_data <- paste(main_dir, "input", sep="/")
-if (!dir.exists(input_data)) dir.create(input_data, recursive = TRUE)
-
-# output is where you will save the analyses done based on your data
-output_data <- paste(main_dir, "output", sep="/")
-if (!dir.exists(output_data)) dir.create(output_data, recursive = TRUE)
-
-# 1.3. load CEMEMS username / password
-# To avoid writing your user and password here (visible to anyone with access) keep it a txt file
-path <- "C:/Users/david/OneDrive/Escritorio/chondrichthyan_habitat/user.txt"
-username <- paste(readLines(path, warn = FALSE), collapse = "")
-path <- "C:/Users/david/OneDrive/Escritorio/chondrichthyan_habitat/psw.txt"
-password <- paste(readLines(path, warn = FALSE), collapse = "")
-
-
-# 2.Prepare your dataset--------------------------------------------------------
-
-# 2.1. Open your dataset:
+# 1.1. Open your dataset:
 data <- read.csv2("input/dataset.csv", sep = ";")
 View(data)
 
 
-# 2.2. Make a dataset with your dates:
+# 1.2. Make a dataset with your dates:
 # We are going to work with a daily resolution, then we want to adjust the download to those days in which you have data. 
 # Set date format as "date" (year-moth-day)
 data$date <- as.Date(data$date)
@@ -70,9 +43,9 @@ Days_df$Days_with_time <- paste0(Days_df$Days, " 11:00:00")
 head(Days_df)
 
 
-# 3. Prepare your catalog------------------------------------------------------
+# 2. Prepare your catalog------------------------------------------------------
 
-# 3.1. Import data catalog
+# 2.1. Import data catalog
 # Remember, the catalog is where you have the required information for download
 catalog <- read.csv2("input/Catalog_CMEMS.csv", sep=";")
 # Check it out and ensure numerical variables are numeric
@@ -91,17 +64,17 @@ catalog <- catalog %>%
 str(catalog)
 
 
-# 4. Log-in in CMEMS through Command Line Interface (CLI) ----------------------
+# 3. Log-in in CMEMS through Command Line Interface (CLI) ----------------------
 # For more info: https://help.marine.copernicus.eu/en/articles/8638253-how-to-download-data-via-the-copernicus-marine-toolbox-in-r
 
-# 4.1. Install python (you should have done this in the package installing part)
+# 3.1. Install python (you should have done this in the package installing part)
 #library(reticulate)
 #install_python() 
-# 4.2. Create an environment (you should have done this in the package installing part)
+# 3.2. Create an environment (you should have done this in the package installing part)
 #virtualenv_create(envname = "cmems")
 #virtualenv_install("cmems", packages = c("copernicusmarine"))
 
-# 4.3. Load into your environment
+# 3.3. Load into your environment
 use_virtualenv("cmems", required = TRUE)
 cm <- import("copernicusmarine")
 
@@ -111,8 +84,8 @@ cm$login(username, password)
 y
 
 
-# 5. Download CMEMS data -------------------------------------------------------
-# 5.1. Download a single file:
+# 4. Download CMEMS data -------------------------------------------------------
+# 4.1. Download a single file:
 # Let's start with the first product on the first date:
 cat <- catalog %>%
   filter(id_product  %in% c("1")) 
@@ -190,7 +163,7 @@ print(lon_resolution)
 
 
 
-# 5.2. Download a group of variables and/or dates-------------------------------
+# 4.2. Download a group of variables and/or dates-------------------------------
 # Subset dates and products if you wish:
 # Define the time subset you want:
 df <- Days_df 
@@ -202,7 +175,7 @@ head(cat)
 #cat <- catalog %>%
 #  filter(dimensions %in% c("2D")) 
 
-# 5.2. Create folder where you are going to save to files:
+# Create folder where you are going to save to files:
 destination_folder <- paste0(input_data, "/cmems")
 if (!dir.exists(destination_folder)) dir.create(destination_folder, recursive = TRUE)
 
@@ -281,7 +254,3 @@ lat_resolution <- abs(lat[2] - lat[1])
 lon_resolution <- abs(lon[2] - lon[1])
 print(lat_resolution)
 print(lon_resolution)
-
-
-
-
