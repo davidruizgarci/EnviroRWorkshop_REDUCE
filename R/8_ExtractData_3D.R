@@ -9,3 +9,59 @@
 #
 #-------------------------------------------------------------------------------
 
+# 1. Load data------------------------------------------------------------------
+data <- read.csv("input/dataset.csv", sep = ";") #remember having date format in your .csv
+head(data)
+
+
+# 2. Explore temporal and spatial range-----------------------------------------
+# Make sure of formates for dates and numerical for lon and lat
+library(dplyr)
+data <- data %>%
+  mutate(
+    date = as.Date(date),  # Convert to Date format
+    lon = as.numeric(gsub(",", ".", lon)),  # Replace commas with dots and convert to numeric
+    lat = as.numeric(gsub(",", ".", lat)),  
+    depth = as.numeric(gsub(",", ".", depth)))
+str(data)
+
+range(data$date)
+range(data$lon)
+range(data$lat)
+range(data$depth)
+
+# 3. Source 3D variables in catalog---------------------------------------------
+#open catalog
+catalog <- read.csv("input/Catalog_CMEMS.csv", sep=";")
+
+cat <- catalog %>%
+  filter(dimensions %in% c("3D")) #, variable %in% c("o2")
+head(cat)
+
+# 2. Extract your own data------------------------------------------------------
+source("0_customfunctions.R")
+
+# Repository to folder where netCDFs are:
+repo <- paste0(input_data, "/cmems") 
+
+# Get the ID of the product you are going to extract data from:
+productid <- cat$id_product[1]
+
+# Apply cmems3d_bottom custom function to subset of data
+# data        Your database
+# lon         longitude
+# lat         latitude
+# date        POSIXct date time or Date
+# id          identificator of each observation/position/tow
+# depth       depth value, in meters (positive)
+# productid   id of the product from catalog table. This is used to find the netcdf file from the repository (repo)
+# repo        repository path with netcdf files. it follows the same structure as the CMEMS FTP server
+
+data <- cmems3d_all(lon=data$lon, lat=data$lat, date=data$date, productid=productid, repo=repo, id=data$observation, data=data)
+head(data)
+
+# Save dataframe
+write.csv(data, "output/dataset_3D.csv", row.names = FALSE)
+
+
+

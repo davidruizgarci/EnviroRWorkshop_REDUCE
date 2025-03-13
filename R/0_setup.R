@@ -3,8 +3,7 @@
 # Title: Setup project directories
 # Course: Environmental Data Extraction and Analysis from Satellite Telemetry and Other Sources
 #
-# Author: David Ruiz-García
-# Email: david.ruiz-garcia@uv.es
+# Authors: Sarah Saldanha, David March, David Ruiz-García
 # Last revision: 2025/03/13
 #
 #-------------------------------------------------------------------------------

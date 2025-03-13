@@ -3,7 +3,7 @@
 # Title: Requiered packages
 # Course: Environmental Data Extraction and Analysis from Satellite Telemetry and Other Sources
 #
-# Author: Sarah Saldanha, David March, David Ruiz-García
+# Authors: Sarah Saldanha, David March, David Ruiz-García
 # Last revision: 2025/03/13
 #
 #-------------------------------------------------------------------------------

@@ -19,6 +19,7 @@ View(data)
 # 1.2. Make a dataset with your dates:
 # We are going to work with a daily resolution, then we want to adjust the download to those days in which you have data. 
 # Set date format as "date" (year-moth-day)
+library(dplyr)
 data$date <- as.Date(data$date)
 # Select uniqued dates
 Days <- unique(data$date)
@@ -52,7 +53,6 @@ catalog <- read.csv2("input/Catalog_CMEMS.csv", sep=";")
 str(catalog) 
 
 # Convert to numerical if they aren't:
-library(dplyr)
 catalog <- catalog %>%
   mutate(
     xmin = as.numeric(gsub(",", ".", xmin)),
@@ -68,7 +68,7 @@ str(catalog)
 # For more info: https://help.marine.copernicus.eu/en/articles/8638253-how-to-download-data-via-the-copernicus-marine-toolbox-in-r
 
 # 3.1. Install python (you should have done this in the package installing part)
-#library(reticulate)
+library(reticulate)
 #install_python() 
 # 3.2. Create an environment (you should have done this in the package installing part)
 #virtualenv_create(envname = "cmems")
@@ -103,14 +103,14 @@ minimum_depth <- cat$depth_min
 maximum_depth <- cat$depth_max
 
 # Naming the file:
-output_filename <- paste0(cat$var_name, "_", df$Days, ".nc")
+output_filename <- paste0(cat$var_name, "_", Days_df$Days, ".nc")
 
 # Selecting where to save it:
 # Generate a folder within input
 destination_folder <- paste0(input_data, "/cmems")
 if (!dir.exists(destination_folder)) dir.create(destination_folder, recursive = TRUE)
 # Generate a folder for the product
-output_directory <- file.path(destination_folder, df$Year, df$Month, df$Day)
+output_directory <- file.path(destination_folder, Days_df$Year, Days_df$Month, Days_df$Day)
 if (!dir.exists(output_directory)) dir.create(output_directory, recursive = TRUE)
 
 # Download:
