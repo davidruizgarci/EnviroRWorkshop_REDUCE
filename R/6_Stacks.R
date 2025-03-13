@@ -85,7 +85,7 @@ catalog$variable
 variables <- c("SST", "CHL")
 
 
-# 3.2. List natCDF files
+# 3.2. List netCDF files
 # Filter only 2D ones:
 day_folder <- paste0("input/cmems/2024/12/25")
 nc_files <- list.files(day_folder, pattern = "_2D_.*\\.nc$", full.names = TRUE)

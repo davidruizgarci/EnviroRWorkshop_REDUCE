@@ -43,22 +43,29 @@ source("0_customfunctions.R")
 
 # Repository to folder where netCDFs are:
 repo <- paste0(input_data, "/cmems") 
-
-# Get the ID of the product you are going to extract data from:
+# Get the ID(s) of the product(s) you are going to extract data from:
 productid <- cat$id_product[1]
 
-# Apply cmems3d_bottom custom function to subset of data
-# data        Your database
-# lon         longitude
-# lat         latitude
-# date        POSIXct date time or Date
-# id          identificator of each observation/position/tow
-# depth       depth value, in meters (positive)
+# The custom function (cmems3d_all) uses the following parameters that you need to provide:
+# data        Your dataset
+# lon         longitude column in your dataset
+# lat         latitude column in your dataset
+# date        POSIXct date time or Date column in your dataset
+# id          identificator of each observation/position/tow column in your dataset
+# depth       depth value, in meters (positive) column in your dataset
 # productid   id of the product from catalog table. This is used to find the netcdf file from the repository (repo)
-# repo        repository path with netcdf files. it follows the same structure as the CMEMS FTP server
+# repo        repository path with netcdf files. 
 
+# Use function for extraction
 data <- cmems3d_all(lon=data$lon, lat=data$lat, date=data$date, productid=productid, repo=repo, id=data$observation, data=data)
 head(data)
+
+#You will obtain three different columns:
+#seasurface: value of the variable at surface
+#seabottom: value of the variable at seabottom
+#nearest: value of the variable at the depth of the netCDF closest to the depth of your observation
+
+
 
 # Save dataframe
 write.csv(data, "output/dataset_3D.csv", row.names = FALSE)
