@@ -65,7 +65,7 @@ stack
 
 # Save it:
 # Create directory:
-output_directory <- paste0(input_directory, "/stack")
+output_directory <- paste0("input/cmems/2024/12/25/stack")
 if (!dir.exists(output_directory)) dir.create(output_directory, recursive = TRUE)
 # Name file:
 output_file <- paste0(output_directory, "/stack_20241225.grd")
@@ -87,6 +87,7 @@ variables <- c("SST", "CHL")
 
 # 3.2. List natCDF files
 # Filter only 2D ones:
+day_folder <- paste0("input/cmems/2024/12/25")
 nc_files <- list.files(day_folder, pattern = "_2D_.*\\.nc$", full.names = TRUE)
 head(nc_files)
 
@@ -100,95 +101,14 @@ e <- extent(-27, -20, 14, 18)
 
 
 # 3.4. Load custom function to prepare and stack raster files for each day
-prepareStackForDay <- function(day_folder, variables, res, e, output_folder) {
-  # Define extent and resolution
-  e <- extent(e)
-  
-  # Create an empty stack
-  stack_dynamic <- stack()
-  
-  # Mapping of original variable names to new names
-  variable_names_map <- list(
-    CHL = "Total.Chlorophyll",
-    SST  = "Temperature")
-  
-  for (variable in variables) {
-    # example to test code: variable <- variables[2]
-    
-    # Construct the file pattern for the variable
-    file_pattern <- paste0("^", variable, "_Analysis_2D_.*\\.nc$")
-    
-    # List netCDF files for the given variable
-    nc_files <- list.files(path = input_directory, pattern = file_pattern, full.names = TRUE)
-    
-    if (length(nc_files) == 0) {
-      next
-    }
-    
-    # Read each netCDF file and prepare the raster
-    for (nc_file in nc_files) {
-      # example for testing code: nc_file <- nc_files[1]
-      
-      # Open the netCDF file
-      r <- raster(nc_file)
-      
-      # Calculate the number of columns and rows
-      ncol <- round((e@xmax - e@xmin) / res)
-      nrow <- round((e@ymax - e@ymin) / res)
-      
-      # Create an empty raster with the specified extent and resolution
-      target_raster <- raster(ncol = ncol, nrow = nrow, 
-                              xmn = e@xmin, xmx = e@xmax, 
-                              ymn = e@ymin, ymx = e@ymax)
-      
-      r_resampled <- resample(r, target_raster, method = "bilinear")
+source("0_customfunctions.R")
 
-      # Stack the raster
-      stack_dynamic <- stack(stack_dynamic, r_resampled)
-      
-      # Rename the latest raster layer in the stack with the desired name
-      layer_name <- variable_names_map[[variable]]
-      names(stack_dynamic)[nlayers(stack_dynamic)] <- layer_name
-      
-      
-      # Close the netCDF file
-      rm(r)
-    }
-  }
-  # Save the final stack to file
-  if (nlayers(stack_dynamic) > 0) {
-    # Extract the base directory and split by '/'
-    components <- unlist(strsplit(day_folder, "/"))
-    
-    # Assumes that folder structure includes year, month, day in the specified positions
-    year <- components[3]
-    month <- components[4]
-    day <- components[5]
-    
-    # Create a date string for the file name
-    date_string <- paste0(year, month, day)
-    
-    # Define the output file path
-    output_file <- file.path(output_folder, paste0("stack_", date_string, ".grd"))
-    
-    # Save the final stack
-    writeRaster(stack_dynamic, output_file, format = "raster", overwrite = TRUE)
-    
-    cat("Stack saved to", output_file, "\n")
-  }
-  
-  # Return the final stacked raster
-  return(stack_dynamic)
-}
-
-
-# 3.5. Prepare stack:
-# path to environmental data:
-day_folder <- paste0("input/cmems/2024/12/25")
+# 3.5. Prepare and save the stack:
+# output path to for stack:
 output_folder <- paste0("input/cmems/2024/12/25/stack")
 
 prepareStackForDay(day_folder, variables, res, e, output_folder)
-stack_dynamic
+
 
 # Load it and check it out:
 stack <- brick(output_file)

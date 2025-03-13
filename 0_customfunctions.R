@@ -8,7 +8,7 @@
 #
 #-------------------------------------------------------------------------------
 
-# Extract the three 3D possibilities at once (surfece, bottom and nearest)
+# 1. Extract the three 3D possibilities at once (surfece, bottom and nearest)
 cmems3d_all <- function(lon, lat, date, productid, repo, data, id, maxZ = NULL) {
   # Description
   # Extracts oceanographic information from 3D numerical models downloaded from CMEMS
@@ -127,3 +127,84 @@ cmems3d_all <- function(lon, lat, date, productid, repo, data, id, maxZ = NULL) 
   return(data)
 }
 
+# 2. Create stack (including resample)
+prepareStackForDay <- function(day_folder, variables, res, e, output_folder) {
+  # Define extent and resolution
+  e <- extent(e)
+  
+  # Create an empty stack
+  stack_dynamic <- stack()
+  
+  # Mapping of original variable names to new names
+  variable_names_map <- list(
+    CHL = "Total.Chlorophyll",
+    SST  = "Temperature")
+  
+  for (variable in variables) {
+    # example to test code: variable <- variables[2]
+    
+    # Construct the file pattern for the variable
+    file_pattern <- paste0("^", variable, "_Analysis_2D_.*\\.nc$")
+    
+    # List netCDF files for the given variable
+    nc_files <- list.files(path = day_folder, pattern = file_pattern, full.names = TRUE)
+    
+    if (length(nc_files) == 0) {
+      next
+    }
+    
+    # Read each netCDF file and prepare the raster
+    for (nc_file in nc_files) {
+      # example for testing code: nc_file <- nc_files[1]
+      
+      # Open the netCDF file
+      r <- raster(nc_file)
+      
+      # Calculate the number of columns and rows
+      ncol <- round((e@xmax - e@xmin) / res)
+      nrow <- round((e@ymax - e@ymin) / res)
+      
+      # Create an empty raster with the specified extent and resolution
+      target_raster <- raster(ncol = ncol, nrow = nrow, 
+                              xmn = e@xmin, xmx = e@xmax, 
+                              ymn = e@ymin, ymx = e@ymax)
+      
+      r_resampled <- resample(r, target_raster, method = "bilinear")
+      
+      # Stack the raster
+      stack_dynamic <- stack(stack_dynamic, r_resampled)
+      
+      # Rename the latest raster layer in the stack with the desired name
+      layer_name <- variable_names_map[[variable]]
+      names(stack_dynamic)[nlayers(stack_dynamic)] <- layer_name
+      
+      
+      # Close the netCDF file
+      rm(r)
+    }
+  }
+  # Save the final stack to file
+  if (nlayers(stack_dynamic) > 0) {
+    # Extract the base directory and split by '/'
+    components <- unlist(strsplit(day_folder, "/"))
+    
+    # Assumes that folder structure includes year, month, day in the specified positions
+    year <- components[3]
+    month <- components[4]
+    day <- components[5]
+    
+    # Create a date string for the file name
+    date_string <- paste0(year, month, day)
+    
+    # Define the output file path
+    output_file <- file.path(output_folder, paste0("stack_", date_string, ".grd"))
+    
+    # Save the final stack
+    writeRaster(stack_dynamic, output_file, format = "raster", overwrite = TRUE)
+    
+    cat("Stack saved to", output_file, "\n")
+  }
+  
+  # Return the final stacked raster
+  return(stack_dynamic)
+}
