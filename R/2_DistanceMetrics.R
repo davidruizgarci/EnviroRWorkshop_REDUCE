@@ -32,11 +32,11 @@ d <- dist2isobath(bathy, dataset$lon, dataset$lat, isobath = 0)
 
 dataset$distance_coast<-dist2isobath(bathy, dataset$lon, dataset$lat, isobath = 0)$distance$
 
+# Add the datapoints to base R plot
+points(dataset$lon, dataset$lat, pch = 21, bg = "orange2", cex = 0.8)
 
-
-
-
-
+# Add great circle lines showing where is the closest position on the coast
+linesGC(d[, 2:3], d[, 4:5])
 
 
 ###distance to seamounts
