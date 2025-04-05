@@ -51,37 +51,33 @@ seamounts$lon <- as.numeric(as.character(seamounts$X))
 seamounts$lat <- as.numeric(as.character(seamounts$Y))
 seamounts$X <- seamounts$Y <- NULL
 
-
 ###first select seamount that are within the study area 
-  seamounts_cut<-subset(seamounts, lon > min(dataset$lon)-1 & lon <max(dataset$lon) +1 & lat< max(dataset$lat)+1 & lat > min (dataset$lat)-1)
+seamounts_cut<-subset(seamounts, lon > min(dataset$lon)-1 & lon <max(dataset$lon) +1 & lat< max(dataset$lat)+1 & lat > min (dataset$lat)-1)
   
 ###different definitions on what a seamount is. Here we are going with seamounts that are less than 1500m deep
-  sm_shallow_1500 <- subset(seamounts_cut, seamounts_cut$Depth > -1501)
-
-  rm(seamounts_cut)
+sm_shallow_1500 <- subset(seamounts_cut, seamounts_cut$Depth > -1501)
+rm(seamounts_cut)
   
 # replicte the rows of the dataset based on the number of seamounts at 1500 and 500m 
-  dataset_rep <- do.call(rbind, replicate(nrow(sm_shallow_1500), dataset, simplify=FALSE)) #seamounts
-  seamount_rep <- do.call(rbind, replicate(nrow(dataset), sm_shallow_1500, simplify=FALSE))#nrows
+dataset_rep <- do.call(rbind, replicate(nrow(sm_shallow_1500), dataset, simplify=FALSE)) #seamounts
+seamount_rep <- do.call(rbind, replicate(nrow(dataset), sm_shallow_1500, simplify=FALSE))#nrows
   
-  seamount_rep <- dplyr::arrange(seamount_rep, seamount_rep$PeakID)
+seamount_rep <- dplyr::arrange(seamount_rep, seamount_rep$PeakID)
   
-  dataset_rep$seamountID <- seamount_rep$PeakID
-  dataset_rep$seamount_lat <- seamount_rep$lat
-  dataset_rep$seamount_lon <- seamount_rep$lon
+dataset_rep$seamountID <- seamount_rep$PeakID
+dataset_rep$seamount_lat <- seamount_rep$lat
+dataset_rep$seamount_lon <- seamount_rep$lon
   
-  #####calculate the distance of all seamounts
-  dataset_rep$dist_seamount <- fossil::deg.dist(dataset_rep$lon, dataset_rep$lat, dataset_rep$seamount_lon, dataset_rep$seamount_lat)
+#####calculate the distance of all seamounts
+dataset_rep$dist_seamount <- fossil::deg.dist(dataset_rep$lon, dataset_rep$lat, dataset_rep$seamount_lon, dataset_rep$seamount_lat)
   
 
 ##which positions are above seamounts? Let's say we consider points less than 60km from the peak of seamounts as on seamounts
   
-  n_pos_60km <-filter(dataset_rep, dataset_rep$dist_seamount < 60.001) %>% group_by(observation) %>% summarize(n_seamount_60_1500 = n())
-  
-  dataset_seamount <- left_join(dataset, n_pos_60km, by = c("observation"))
-  
-  dataset_seamount$seamount_60_1500 <- case_when(is.na(dataset_seamount$n_seamount_60_1500) == FALSE  ~ "Yes",
+n_pos_60km <-filter(dataset_rep, dataset_rep$dist_seamount < 60.001) %>% group_by(observation) %>% summarize(n_seamount_60_1500 = n())
+dataset_seamount <- left_join(dataset, n_pos_60km, by = c("observation"))
+dataset_seamount$seamount_60_1500 <- case_when(is.na(dataset_seamount$n_seamount_60_1500) == FALSE  ~ "Yes",
                                                    is.na(dataset_seamount$n_seamount_60_1500) == TRUE  ~ "No",)
   
-  ##clean up working directory. 
-  rm(seamount_rep, dataset_rep, n_pos_60km,sm_shallow_1500)
+##clean up working directory. 
+rm(seamount_rep, dataset_rep, n_pos_60km,sm_shallow_1500)
