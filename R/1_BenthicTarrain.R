@@ -65,26 +65,24 @@ plot(bathy_ras)
 bathy_sp<-as.SpatialGridDataFrame(bathy)
 plot(bathy_sp)
 
-
-
-plot(bathy, image = TRUE, lwd = 0.1, land = TRUE, bpal = list(c(0, max(bathy), "grey"), c(min(bathy), 0, blues)))
 # Make the coastline more visible
-plot(bathy, deep = 0, shallow = 0, step = 0, lwd = 0.6, add = TRUE) # Add the 5 points 
+plot(bathy, image = TRUE, lwd = 0.1, land = TRUE, bpal = list(c(0, max(bathy), "grey"), c(min(bathy), 0, blues)))
+plot(bathy, deep = 0, shallow = 0, step = 0, lwd = 0.6, add = TRUE) 
+
+# Add the datapoints to base R plot
 points(dataset$lon, dataset$lat, pch = 21, bg = "orange2", cex = 0.8)
 # Add great circle lines
 linesGC(d[, 2:3], d[, 4:5])
 
 ####plotting bathymetry in ggplot with point from dataset
 
-###set point as Simple feature
-
 ###duplicate the lat lon variables so that we keep them in the dataset 
 dataset$Longitude<-dataset$lon
 dataset$Latitude<-dataset$lat
 
+###set point as Simple feature
 dataset_sf <- st_as_sf(dataset, coords = c("Longitude", "Latitude"), 
                    crs = 4326, agr = "constant")
-
 
 ggplot(bathy, aes(x=x, y=y)) + coord_quickmap() +
   # background
@@ -101,7 +99,6 @@ ggplot(bathy, aes(x=x, y=y)) + coord_quickmap() +
 get.depth(bathy, x=dataset$lon, y=dataset$lat, locator=FALSE)
 
 ### add this to your dataset
-
 dataset$depth<-get.depth(bathy, x=dataset$lon, y=dataset$lat, locator=FALSE)$depth
 
 
@@ -131,46 +128,4 @@ dataset$TRI <- extract(terrain_data$tri, dataset_sf)
 dataset$sTPI <- extract(terrain_data$tpi, dataset_sf)
 
 
-###distance to seamounts
 
-##bring in seamount data from Yesson et al. 
-
-seamounts <- read.csv2("Seamounts_Yesson.csv")
-seamounts$lon <- as.numeric(as.character(seamounts$X))
-seamounts$lat <- as.numeric(as.character(seamounts$Y))
-seamounts$X <- seamounts$Y <- NULL
-
-
-###first select seamount that are within the study area 
-  seamounts_cut<-subset(seamounts, lon > min(dataset$lon)-1 & lon <max(dataset$lon) +1 & lat< max(dataset$lat)+1 & lat > min (dataset$lat)-1)
-  
-###different definitions on what a seamount is. Here we are going with seamounts that are less than 1500m deep
-  sm_shallow_1500 <- subset(seamounts_cut, seamounts_cut$Depth > -1501)
-
-  rm(seamounts_cut)
-  
-# replicte the rows of the dataset based on the number of seamounts at 1500 and 500m 
-  dataset_rep <- do.call(rbind, replicate(nrow(sm_shallow_1500), dataset, simplify=FALSE)) #seamounts
-  seamount_rep <- do.call(rbind, replicate(nrow(dataset), sm_shallow_1500, simplify=FALSE))#nrows
-  
-  seamount_rep <- dplyr::arrange(seamount_rep, seamount_rep$PeakID)
-  
-  dataset_rep$seamountID <- seamount_rep$PeakID
-  dataset_rep$seamount_lat <- seamount_rep$lat
-  dataset_rep$seamount_lon <- seamount_rep$lon
-  
-  #####calculate the distance of all seamounts
-  dataset_rep$dist_seamount <- fossil::deg.dist(dataset_rep$lon, dataset_rep$lat, dataset_rep$seamount_lon, dataset_rep$seamount_lat)
-  
-
-##which positions are above seamounts? Let's say we consider points less than 60km from the peak of seamounts as on seamounts
-  
-  n_pos_60km <-filter(dataset_rep, dataset_rep$dist_seamount < 60.001) %>% group_by(observation) %>% summarize(n_seamount_60_1500 = n())
-  
-  dataset_seamount <- left_join(dataset, n_pos_60km, by = c("observation"))
-  
-  dataset_seamount$seamount_60_1500 <- case_when(is.na(dataset_seamount$n_seamount_60_1500) == FALSE  ~ "Yes",
-                                                   is.na(dataset_seamount$n_seamount_60_1500) == TRUE  ~ "No",)
-  
-  ##clean up working directory. 
-  rm(seamount_rep, dataset_rep, n_pos_60km,sm_shallow_1500)
