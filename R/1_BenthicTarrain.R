@@ -8,12 +8,21 @@
 # Last revision: 2025-04-05
 #
 #-------------------------------------------------------------------------------
+#bring in libraries 
+library(marmap)
+library(raster)
+library(dplyr)
+library(ggplot2) 
+library(sf)
+
 
 #Open your dataset
 dataset<-read.csv2("input/dataset.csv")
 view(dataset)
 
-#download the bathymetry for the area of your study. 
+#download the bathymetry for the area of your study using marmap
+
+
 #This will take a while if the area is quite large and requires internet connection.
 #Here we are downloading an area 0.5 degrees larger than the extent of the data, I recommend this
 #especially if you are planning to extract the bathymetry within a kernel or buffer of your points
