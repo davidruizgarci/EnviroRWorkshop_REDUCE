@@ -33,11 +33,11 @@ d <- dist2isobath(bathy, dataset$lon, dataset$lat, isobath = 0)
 dataset$distance_coast<-dist2isobath(bathy, dataset$lon, dataset$lat, isobath = 0)$distance$
 
 # Add the datapoints to base R plot
-points(dataset$lon, dataset$lat, pch = 21, bg = "orange2", cex = 0.8)
+plot(bathy, image = TRUE, land = TRUE,  bpal = list(c(0, max(bathy), "#CC9C77"), c(min(bathy),0,blues)))  
+points(dataset$lon, dataset$lat, pch = 21, bg = "yellow", cex = 0.8)
 
 # Add great circle lines showing where is the closest position on the coast
 linesGC(d[, 2:3], d[, 4:5])
-
 
 ###distance to seamounts
 #for the distance to seamounts, we will be using the Yesson seamount dataset
@@ -46,7 +46,7 @@ linesGC(d[, 2:3], d[, 4:5])
 #https://www.sciencedirect.com/science/article/abs/pii/S0967063711000392
 
 ##bring in seamount data from Yesson et al. 2011
-seamounts <- read.csv2("Seamounts_Yesson.csv")
+seamounts <- read.csv2("input/Seamounts_Yesson.csv")
 seamounts$lon <- as.numeric(as.character(seamounts$X))
 seamounts$lat <- as.numeric(as.character(seamounts$Y))
 seamounts$X <- seamounts$Y <- NULL
