@@ -32,27 +32,27 @@ stack <- brick(output_file)
 ### extract values for the exact points
 dataset_sf$Total.Chlorophyll<- extract(stack$Total.Chlorophyll, dataset_sf)
 dataset_sf$Temperature<- extract(stack$Temperature, dataset_sf)
-  plot(stack$Total.Chlorophyll)
+plot(stack$Total.Chlorophyll)
   
 ### extract means, sd, min, max of values per buffer around points. 
     
 ###distance here is in degrees since our data is in lat long 
-### since the resolution is 0.25 (approx 27km), we will need to do a buffer larger then this to get the metrics. doing one of 100 km here (100 000m)
+### since the resolution is 0.25 (approx 27km), we will need to do a buffer larger than this to get the metrics. 
+#Here we will create a buffer of 100 km (100 000m)
     
-    dataset_sf$Total.Chlorophyll_buffer_mean<-extract(stack$Total.Chlorophyll,dataset_sf, buffer=100000, fun=mean)
-    dataset_sf$Total.Chlorophyll_buffer_sd<-extract(stack$Total.Chlorophyll,dataset_sf, buffer=100000, fun=sd) ### 
-    dataset_sf$Total.Chlorophyll_buffer_min<-extract(stack$Total.Chlorophyll,dataset_sf, buffer=100000, fun=min)
-    dataset_sf$Total.Chlorophyll_buffer_max<-extract(stack$Total.Chlorophyll,dataset_sf, buffer=100000, fun=max)
+dataset_sf$Total.Chlorophyll_buffer_mean<-extract(stack$Total.Chlorophyll,dataset_sf, buffer=100000, fun=mean)
+dataset_sf$Total.Chlorophyll_buffer_sd<-extract(stack$Total.Chlorophyll,dataset_sf, buffer=100000, fun=sd) ### 
+dataset_sf$Total.Chlorophyll_buffer_min<-extract(stack$Total.Chlorophyll,dataset_sf, buffer=100000, fun=min)
+dataset_sf$Total.Chlorophyll_buffer_max<-extract(stack$Total.Chlorophyll,dataset_sf, buffer=100000, fun=max)
+        
+###do the same with exactextract, which handles grid cells that are partially covered by a polygon
+###create buffer first
+sp_buffer <- st_buffer(dataset_sf, 100000) 
     
-    
-    ###do the same with exactextract, which handles grid cells that are partially covered by a polygon
-    ###create buffer first
-    sp_buffer <- st_buffer(dataset_sf, 100000) 
-    
-    ###and then extract
-    dataset_sf$Total.Chlorophyll_buffer_raster_extract_mean<-exactextractr::exact_extract(stack$Total.Chlorophyll,sp_buffer,'mean')
-    dataset_sf$Total.Chlorophyll_buffer_raster_extract_sd<-exactextractr::exact_extract(stack$Total.Chlorophyll,sp_buffer,'sd')
-    dataset_sf$Total.Chlorophyll_buffer_raster_extract_min<-exactextractr::exact_extract(stack$Total.Chlorophyll,sp_buffer,'min')
-    dataset_sf$Total.Chlorophyll_buffer_raster_extract_max<-exactextractr::exact_extract(stack$Total.Chlorophyll,sp_buffer,'max')
+###and then extract
+dataset_sf$Total.Chlorophyll_buffer_raster_extract_mean<-exactextractr::exact_extract(stack$Total.Chlorophyll,sp_buffer,'mean')
+dataset_sf$Total.Chlorophyll_buffer_raster_extract_sd<-exactextractr::exact_extract(stack$Total.Chlorophyll,sp_buffer,'sd')
+dataset_sf$Total.Chlorophyll_buffer_raster_extract_min<-exactextractr::exact_extract(stack$Total.Chlorophyll,sp_buffer,'min')
+dataset_sf$Total.Chlorophyll_buffer_raster_extract_max<-exactextractr::exact_extract(stack$Total.Chlorophyll,sp_buffer,'max')
 
-  plot(dataset_sf$Total.Chlorophyll_buffer_raster_extract_mean, dataset_sf$Total.Chlorophyll_buffer_mean) ## simialr but a bit different
+plot(dataset_sf$Total.Chlorophyll_buffer_raster_extract_mean, dataset_sf$Total.Chlorophyll_buffer_mean) ## simialr but a bit different
