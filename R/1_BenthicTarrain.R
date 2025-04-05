@@ -26,18 +26,20 @@ view(dataset)
 #download the bathymetry for the area of your study using marmap:
 #This will take a while if the area is quite large and requires internet connection.
 #Here we are downloading an area 0.5 degrees larger than the extent of the data, I recommend this
-#especially if you are planning to extract the bathymetry within a kernel or buffer of your points
+#especially if you are planning to extract the bathymetry within a kernel or buffer of your points.
+#resolution of the grid is in minutes (default is 4)
 
 bathy <- getNOAA.bathy(lon1 = min(dataset$lon)-0.5, lon2 = max(dataset$lon)+0.5,
                        lat1 = min(dataset$lat)-0.5, lat2 =  max(dataset$lat)+0.5, resolution = 1)
 
+#save this out for later
+saveRDS(bathy, "output/bathy.RDS")
+
 ##have a look at the bathymetry lines
 plot(bathy)
 
-#bathymetry features from marmap can be plotted as polygons and both base R and ggplot2. Here are some examples on how you
-#you can play
-
-###you can also play with the colors of the map here 
+#bathymetry features from marmap can be plotted as contour lines and as a raster and both base R and ggplot2. Here are some examples:
+#playing with the colors of the map in base R:
 blues <- colorRampPalette(c("red","purple","blue", "cadetblue1","white"))
 plot(bathy, image = TRUE, bpal = blues(100))
 
@@ -55,25 +57,14 @@ plot(bathy, image = TRUE, land = TRUE, lwd = 0.1, bpal = list(c(0, max(bathy), "
 # Making the coastline more visible plot
 plot(bathy, deep = 0, shallow = 0, step = 0, lwd = 0.4, add = TRUE)
 
-
 ###you can also transform the bathymetric data into a raster
-
 bathy_ras<-as.raster(bathy)
-
 plot(bathy_ras)
 
 ###or as a spatial grid dataframe
-
 bathy_sp<-as.SpatialGridDataFrame(bathy)
-
 plot(bathy_sp)
 
-
-
-###distance to an isobath (in this case, to the coast) within the study area
-##here start.lon and sart.lat are from your dataset, end.lon and end.lat are the closest point on the isobath
-
-d <- dist2isobath(bathy, dataset$lon, dataset$lat, isobath = 0)
 
 
 plot(bathy, image = TRUE, lwd = 0.1, land = TRUE, bpal = list(c(0, max(bathy), "grey"), c(min(bathy), 0, blues)))
