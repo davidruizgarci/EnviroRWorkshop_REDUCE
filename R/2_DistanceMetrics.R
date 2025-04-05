@@ -21,18 +21,31 @@ library(sf)
 dataset<-read.csv2("input/dataset.csv")
 
 #read in bathymetry
-
+bathy<-readRDS("output/bathy.RDS")
 
 ###distance to an isobath (in this case, to the coast) within the study area
 ##here start.lon and sart.lat are from your dataset, end.lon and end.lat are the closest point on the isobath
 
 d <- dist2isobath(bathy, dataset$lon, dataset$lat, isobath = 0)
 
+###we can add the distance to our dataset 
+
+dataset$distance_coast<-dist2isobath(bathy, dataset$lon, dataset$lat, isobath = 0)$distance$
+
+
+
+
+
+
+
 
 ###distance to seamounts
+#for the distance to seamounts, we will be using the Yesson seamount dataset
 
-##bring in seamount data from Yesson et al. 
+#here is some reference materials: 
+#https://www.sciencedirect.com/science/article/abs/pii/S0967063711000392
 
+##bring in seamount data from Yesson et al. 2011
 seamounts <- read.csv2("Seamounts_Yesson.csv")
 seamounts$lon <- as.numeric(as.character(seamounts$X))
 seamounts$lat <- as.numeric(as.character(seamounts$Y))
