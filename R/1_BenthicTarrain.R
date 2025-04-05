@@ -58,16 +58,12 @@ plot(bathy, image = TRUE, land = TRUE, lwd = 0.1, bpal = list(c(0, max(bathy), "
 plot(bathy, deep = 0, shallow = 0, step = 0, lwd = 0.4, add = TRUE)
 
 ###you can also transform the bathymetric data into a raster
-bathy_ras<-as.raster(bathy)
+bathy_ras<-marmap::as.raster(bathy)
 plot(bathy_ras)
 
 ###or as a spatial grid dataframe
 bathy_sp<-as.SpatialGridDataFrame(bathy)
 plot(bathy_sp)
-
-# Make the coastline more visible
-plot(bathy, image = TRUE, lwd = 0.1, land = TRUE, bpal = list(c(0, max(bathy), "grey"), c(min(bathy), 0, blues)))
-plot(bathy, deep = 0, shallow = 0, step = 0, lwd = 0.6, add = TRUE) 
 
 # Add the datapoints to base R plot
 points(dataset$lon, dataset$lat, pch = 21, bg = "orange2", cex = 0.8)
