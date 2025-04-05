@@ -85,7 +85,3 @@ seamounts$X <- seamounts$Y <- NULL
   
   ##clean up working directory. 
   rm(seamount_rep, dataset_rep, n_pos_60km,sm_shallow_1500)
-
-
-  
-  
