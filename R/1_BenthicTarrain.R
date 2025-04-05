@@ -67,16 +67,13 @@ plot(bathy_sp)
 
 # Add the datapoints to base R plot
 points(dataset$lon, dataset$lat, pch = 21, bg = "orange2", cex = 0.8)
-# Add great circle lines
-linesGC(d[, 2:3], d[, 4:5])
 
-####plotting bathymetry in ggplot with point from dataset
-
+####plotting bathymetry in ggplot with the points from our dataset
 ###duplicate the lat lon variables so that we keep them in the dataset 
 dataset$Longitude<-dataset$lon
 dataset$Latitude<-dataset$lat
 
-###set point as Simple feature
+###set point as simple features
 dataset_sf <- st_as_sf(dataset, coords = c("Longitude", "Latitude"), 
                    crs = 4326, agr = "constant")
 
@@ -91,15 +88,12 @@ ggplot(bathy, aes(x=x, y=y)) + coord_quickmap() +
 
   
 ###Extract depth for your points
-
 get.depth(bathy, x=dataset$lon, y=dataset$lat, locator=FALSE)
 
 ### add this to your dataset
 dataset$depth<-get.depth(bathy, x=dataset$lon, y=dataset$lat, locator=FALSE)$depth
 
-
 ###extract characteristics of the terrain based on 8 surrounding cells
-
 #slope: Angle of steepness of bathymetry
 #aspect: the compass direction that a slope faces,  measured in degrees from north
 #roughness: Roughness is the difference between the maximum and the minimum value of a cell and its 8 surrounding cells.
@@ -122,6 +116,3 @@ dataset$aspect <- extract(terrain_data$aspect, dataset_sf)
 dataset$roughness <- extract(terrain_data$roughness, dataset_sf)
 dataset$TRI <- extract(terrain_data$tri, dataset_sf)
 dataset$sTPI <- extract(terrain_data$tpi, dataset_sf)
-
-
-
