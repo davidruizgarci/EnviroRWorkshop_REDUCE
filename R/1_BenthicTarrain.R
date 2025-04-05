@@ -102,6 +102,7 @@ dataset$depth<-get.depth(bathy, x=dataset$lon, y=dataset$lat, locator=FALSE)$dep
 
 terrain_data <- terrain(bathy_ras, opt = c("slope", "aspect", "roughness", "TRI", "TPI"), unit = "degrees")
 
+dev.off() ##clear previous plots
 plot(terrain_data$slope, main = "Slope")
 plot(terrain_data$aspect, main = "Aspect")
 plot(terrain_data$roughness, main = "Roughness")
