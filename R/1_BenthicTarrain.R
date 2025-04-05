@@ -52,10 +52,10 @@ plot(bathy, image = TRUE, bpal = blues(100))
 blues <- c("lightsteelblue4", "lightsteelblue3", "lightsteelblue2", "lightsteelblue1") 
 
 #Plotting the bathymetry with different colors for land and sea 
-plot(bathy, image = TRUE, land = TRUE, lwd = 0.1, bpal = list(c(0, max(bathy), "#CC9C77"), c(min(bathy),0,blues)))
+plot(bathy, image = TRUE, land = TRUE,  bpal = list(c(0, max(bathy), "#CC9C77"), c(min(bathy),0,blues)))
 
 # Making the coastline more visible plot
-plot(bathy, deep = 0, shallow = 0, step = 0, lwd = 0.4, add = TRUE)
+plot(bathy, deep = 0, shallow = 0, step = 0, add = TRUE)
 
 ###you can also transform the bathymetric data into a raster
 bathy_ras<-marmap::as.raster(bathy)
