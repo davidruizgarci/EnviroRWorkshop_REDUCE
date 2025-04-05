@@ -15,31 +15,36 @@ library(dplyr)
 library(ggplot2) 
 library(sf)
 
-
 #Open your dataset
 dataset<-read.csv2("input/dataset.csv")
 view(dataset)
 
-#download the bathymetry for the area of your study using marmap
+#There are lots of reference materials for marmap- 1 reference manual, 1 paper and 3 vignettes!: 
+#https://cran.r-project.org/web/packages/marmap/index.html
+#https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0073051
 
-
+#download the bathymetry for the area of your study using marmap:
 #This will take a while if the area is quite large and requires internet connection.
 #Here we are downloading an area 0.5 degrees larger than the extent of the data, I recommend this
 #especially if you are planning to extract the bathymetry within a kernel or buffer of your points
+
 bathy <- getNOAA.bathy(lon1 = min(dataset$lon)-0.5, lon2 = max(dataset$lon)+0.5,
                        lat1 = min(dataset$lat)-0.5, lat2 =  max(dataset$lat)+0.5, resolution = 1)
 
 ##have a look at the bathymetry lines
 plot(bathy)
 
-#bathymetry features from marmap can be plotted in both base R and ggplot2. Here are some examples on how you
+#bathymetry features from marmap can be plotted as polygons and both base R and ggplot2. Here are some examples on how you
 #you can play
 
 ###you can also play with the colors of the map here 
 blues <- colorRampPalette(c("red","purple","blue", "cadetblue1","white"))
 plot(bathy, image = TRUE, bpal = blues(100))
 
-e bpal argument of plot.bathy() also accepts a list of depth/altitude slices associated with a set of colors for each slice. This method makes it possible to easily produce publication-quality maps. For instance, using the bathy dataset downloaded at full resolution (i.e. with the resolution argument of the getNOAA.bathy() function set to 1) we can easily produce a high-resolution map: 
+#The e bpal argument of plot.bathy() also accepts a list of depth/altitude slices associated with a set of colors for each slice. 
+#This method makes it possible to easily produce publication-quality maps. For instance, 
+#using the bathy dataset downloaded at full resolution (i.e. with the resolution argument of the getNOAA.bathy() function set to 1)
+#we can easily produce a high-resolution map: 
 
 # Creating a custom palette of blues 
 blues <- c("lightsteelblue4", "lightsteelblue3", "lightsteelblue2", "lightsteelblue1") 
