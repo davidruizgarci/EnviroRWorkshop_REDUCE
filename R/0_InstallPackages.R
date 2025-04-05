@@ -9,7 +9,7 @@
 #-------------------------------------------------------------------------------
 
 # List of packages that need to be installed before the course:
-install.packages(c("dplyr", "reticulate", "ncdf4", "raster"))
+install.packages(c("dplyr", "reticulate", "ncdf4", "raster", "marmap", "ggplot2", "sf", "exactextractr" ))
 
 
 #' For accessing Copernicus Marine Science (CMEMS) we need to access through python:
