@@ -16,6 +16,7 @@ library(dplyr)
 library(ggplot2) 
 library(exactextractr)
 library(sf)
+library(fossil)
 
 #read in dataset
 dataset<-read.csv2("input/dataset.csv")
