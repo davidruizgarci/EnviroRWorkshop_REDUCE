@@ -17,54 +17,8 @@ library(ggplot2)
 library(exactextractr)
 library(sf)
 
-setwd("C:/Users/sarah/Dropbox/Sarah Saldanha (1)/RClass_2025/Environmental Data Extraction and Analysis from Satellite Telemetry")
 
 dataset<-read.csv2("input/dataset.csv")
-
-
-##download the bathymetry for the area of your study. This will take a while if the area is quite large and requires internet connection
-
-bathy <- getNOAA.bathy(lon1 = min(dataset$lon)-0.5, lon2 = max(dataset$lon)+0.5,
-                       lat1 = min(dataset$lat)-0.5, lat2 =  max(dataset$lat)+0.5, resolution = 1)
-
-##have a look at the bathymetry lines
-plot(bathy)
-
-
-##Or with a raster layer colored by depth
-plot(bathy, image = TRUE) 
-
-###you can also play with the colors of the map here 
-
-blues <- colorRampPalette(c("red","purple","blue", "cadetblue1","white"))
-plot(bathy, image = TRUE, bpal = blues(100))
-
-
-#The bpal argument of plot.bathy() also accepts a list of depth/altitude slices associated with a set of colors for each slice. This method makes it possible to easily produce publication-quality maps. For instance, using the bathy dataset downloaded at full resolution (i.e. with the resolution argument of the getNOAA.bathy() function set to 1) we can easily produce a high-resolution map: 
-
-# Creating a custom palette of blues 
-
-blues <- c("lightsteelblue4", "lightsteelblue3", "lightsteelblue2", "lightsteelblue1") 
-
-#Plotting the bathymetry with different colors for land and sea 
-
-plot(bathy, image = TRUE, land = TRUE, lwd = 0.1, bpal = list(c(0, max(bathy), "#CC9C77"), c(min(bathy),0,blues)))
-
-# Making the coastline more visible plot
-plot(bathy, deep = 0, shallow = 0, step = 0, lwd = 0.4, add = TRUE)
-
-
-###you can also transform the bathymetric data into a raster
-
-bathy_ras<-as.raster(bathy)
-
-plot(bathy_ras)
-
-###or as a spatial grid dataframe
-
-bathy_sp<-as.SpatialGridDataFrame(bathy)
-
-plot(bathy_sp)
 
 
 
@@ -72,6 +26,9 @@ plot(bathy_sp)
 ##here start.lon and sart.lat are from your dataset, end.lon and end.lat are the closest point on the isobath
 
 d <- dist2isobath(bathy, dataset$lon, dataset$lat, isobath = 0)
+
+
+
 
 
 plot(bathy, image = TRUE, lwd = 0.1, land = TRUE, bpal = list(c(0, max(bathy), "grey"), c(min(bathy), 0, blues)))
