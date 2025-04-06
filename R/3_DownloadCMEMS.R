@@ -25,11 +25,23 @@ library(ggplot2)
 # Load land mask:
 world <- ne_countries(scale = "medium", returnclass = "sf")
 # Make plot:
+
+# Zoom in:
 ggplot() +
   geom_sf(data = world, fill = "gray90", color = "gray40") +
   geom_point(data = data, aes(x = lon, y = lat, color = depth), size = 3) +
   scale_color_viridis_c(name = "Depth (m)", option = "D", direction = -1) +
   coord_sf(xlim = range(data$lon) + c(-1, 1), ylim = range(data$lat) + c(-1, 1), expand = FALSE) +
+  theme_minimal() +
+  labs(title = "Observation Locations within Cabo Verde",
+       x = "Longitude", y = "Latitude")
+
+# Zoom out:
+ggplot() +
+  geom_sf(data = world, fill = "gray90", color = "gray40") +
+  geom_point(data = data, aes(x = lon, y = lat, color = depth), size = 3) +
+  scale_color_viridis_c(name = "Depth (m)", option = "D", direction = -1) +
+  coord_sf(xlim = range(data$lon) + c(-10, 15), ylim = range(data$lat) + c(-10, 10), expand = FALSE) +
   theme_minimal() +
   labs(title = "Observation Locations within Cabo Verde",
        x = "Longitude", y = "Latitude")
