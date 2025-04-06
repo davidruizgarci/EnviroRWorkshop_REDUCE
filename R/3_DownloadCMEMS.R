@@ -92,26 +92,49 @@ cat <- catalog %>%
 
 # Required information for download:
 dataset_id <- cat$dataset_id
+print(dataset_id)
+
 start_datetime <- min(Days_df$Days_with_time)
+print(start_datetime)
+
 end_datetime <- max(Days_df$Days_with_time)
+print(end_datetime)
+
 variables <- list(cat$var) # attention - variables must be a list
+print(variables)
+
 minimum_longitude <- cat$xmin
+print(minimum_longitude)
+
 maximum_longitude <-  cat$xmax
+print(maximum_longitude)
+
 minimum_latitude <-  cat$ymin
+print(minimum_latitude)
+
 maximum_latitude <- cat$ymax
+print(maximum_latitude)
+
 minimum_depth <- cat$depth_min
+print(minimum_depth)
+
 maximum_depth <- cat$depth_max
+print(maximum_depth)
 
 # Naming the file:
 output_filename <- paste0(cat$var_name, "_", Days_df$Days, ".nc")
+print(output_filename)
 
 # Selecting where to save it:
 # Generate a folder within input
 destination_folder <- paste0(input_data, "/cmems")
 if (!dir.exists(destination_folder)) dir.create(destination_folder, recursive = TRUE)
+print(destination_folder)
+
 # Generate a folder for the product
 output_directory <- file.path(destination_folder, Days_df$Year, Days_df$Month, Days_df$Day)
 if (!dir.exists(output_directory)) dir.create(output_directory, recursive = TRUE)
+print(output_directory)
 
 # Download:
 cm$subset(dataset_id = dataset_id,
@@ -172,8 +195,8 @@ head(df)
 # Define the catalog subset you want:
 cat <- catalog
 head(cat)
-#cat <- catalog %>%
-#  filter(dimensions %in% c("2D")) 
+cat <- catalog %>%
+  filter(dimensions %in% c("2D")) 
 
 # Create folder where you are going to save to files:
 destination_folder <- paste0(input_data, "/cmems")

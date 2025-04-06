@@ -2,3 +2,6 @@
 1;SST_Analysis_2D;SST;2D;Analysis;CMEMS;GLOBAL_ANALYSISFORECAST_PHY_001_024;cmems_mod_glo_phy-thetao_anfc_0.083deg_P1D-m;Sea surface temperature anomaly;ºC;1;1;daily;0.083º;thetao;-27;-20;14;18;thetao;01/11/2022;22/03/2025
 2;CHL_Analysis_2D;CHL;2D;Analysis;CMEMS;GLOBAL_ANALYSISFORECAST_BGC_001_028;cmems_mod_glo_bgc-pft_anfc_0.25deg_P1D-m;Mass concentration of chlorophyll a in sea water;mg/m3;1;1;daily;025º;chl;-27;-20;14;18;chl;01/11/2021;21/03/2025
 3;CHL_Analysis_3D;CHL;3D;Analysis;CMEMS;GLOBAL_ANALYSISFORECAST_BGC_001_028;cmems_mod_glo_bgc-pft_anfc_0.25deg_P1D-m;Mass concentration of chlorophyll a in sea water;mg/m3;1;5727;daily;025º;chl;-27;-20;14;18;chl;01/11/2021;21/03/2025
+4;uo_Analysis;uo;2D;Analysis;CMEMS;GLOBAL_ANALYSISFORECAST_PHY_001_024;cmems_mod_glo_phy-cur_anfc_0.083deg_P1D-m;easterward_sea_water_velocity;m/s;1;1;daily;0.083º;uo;-27;-20;14;18;uo;01/06/2022;15/04/2025
+5;vo_Analysis;vo;2D;Analysis;CMEMS;GLOBAL_ANALYSISFORECAST_PHY_001_024;cmems_mod_glo_phy-cur_anfc_0.083deg_P1D-m;northward_sea_water_velocity;m/s;1;1;daily;0.083º;vo;-27;-20;14;18;vo;01/06/2022;15/04/2025
+6;so_Analysis;so;2D;Analysis;CMEMS;GLOBAL_ANALYSISFORECAST_PHY_001_024;cmems_mod_glo_phy-so_anfc_0.083deg_P1D-m;sea_water_salinity;ppt;1;1;daily;0.083º;so;-27;-20;14;18;so;01/06/2022;15/04/2025
