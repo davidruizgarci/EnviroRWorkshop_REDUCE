@@ -14,6 +14,25 @@
 # 1.1. Open your dataset:
 data <- read.csv2("input/dataset.csv", sep = ";")
 View(data)
+head(data)
+
+
+# Plot data to have a reference:
+library(rnaturalearth)
+library(rnaturalearthdata)
+library(ggplot2)
+
+# Load land mask:
+world <- ne_countries(scale = "medium", returnclass = "sf")
+# Make plot:
+ggplot() +
+  geom_sf(data = world, fill = "gray90", color = "gray40") +
+  geom_point(data = data, aes(x = lon, y = lat, color = depth), size = 3) +
+  scale_color_viridis_c(name = "Depth (m)", option = "D", direction = -1) +
+  coord_sf(xlim = range(data$lon) + c(-1, 1), ylim = range(data$lat) + c(-1, 1), expand = FALSE) +
+  theme_minimal() +
+  labs(title = "Observation Locations within Cabo Verde",
+       x = "Longitude", y = "Latitude")
 
 
 # 1.2. Make a dataset with your dates:
