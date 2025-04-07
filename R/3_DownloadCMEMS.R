@@ -83,6 +83,8 @@ head(Days_df)
 # 2.1. Import data catalog
 # Remember, the catalog is where you have the required information for download
 catalog <- read.csv2("R/input/Catalog_CMEMS.csv", sep=";")
+View(catalog)
+
 # Check it out and ensure numerical variables are numeric
 str(catalog) 
 
