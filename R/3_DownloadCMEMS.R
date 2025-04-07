@@ -106,6 +106,16 @@ library(reticulate)
 #virtualenv_install("cmems", packages = c("copernicusmarine"))
 
 # 3.3. Load into your environment
+# To avoid writing your user and password here (visible to anyone with access) keep it a txt file
+path <- "C:/Users/david/OneDrive/Escritorio/chondrichthyan_habitat/user.txt"
+#if(cpu == "yours") path <- "..."
+username <- paste(readLines(path, warn = FALSE), collapse = "")
+
+path <- "C:/Users/david/OneDrive/Escritorio/chondrichthyan_habitat/psw.txt"
+#if(cpu == "yours") path <- "..."
+password <- paste(readLines(path, warn = FALSE), collapse = "")
+
+
 use_virtualenv("cmems", required = TRUE)
 cm <- import("copernicusmarine")
 
@@ -158,7 +168,7 @@ print(output_filename)
 
 # Selecting where to save it:
 # Generate a folder within input
-destination_folder <- paste0(input_data, "/cmems")
+destination_folder <- paste0("input/cmems")
 if (!dir.exists(destination_folder)) dir.create(destination_folder, recursive = TRUE)
 print(destination_folder)
 
@@ -230,7 +240,7 @@ cat <- catalog %>%
   filter(dimensions %in% c("2D")) 
 
 # Create folder where you are going to save to files:
-destination_folder <- paste0(input_data, "/cmems")
+destination_folder <- paste0("input/cmems")
 if (!dir.exists(destination_folder)) dir.create(destination_folder, recursive = TRUE)
 
 t <- Sys.time()
@@ -239,7 +249,7 @@ for(i in 1:nrow(cat)){
   # Calculate remaining products
   #i=2
   remaining_products <- nrow(cat) - i
-
+  
   #If you need a folder per each date:
   #j=1
   for(j in 1:nrow(df)){
