@@ -12,7 +12,7 @@
 # 1.Prepare your dataset--------------------------------------------------------
 
 # 1.1. Open your dataset:
-data <- read.csv2("input/dataset.csv", sep = ";")
+data <- read.csv2("R/input/dataset.csv", sep = ";")
 View(data)
 head(data)
 
@@ -79,7 +79,7 @@ head(Days_df)
 
 # 2.1. Import data catalog
 # Remember, the catalog is where you have the required information for download
-catalog <- read.csv2("input/Catalog_CMEMS.csv", sep=";")
+catalog <- read.csv2("R/input/Catalog_CMEMS.csv", sep=";")
 # Check it out and ensure numerical variables are numeric
 str(catalog) 
 
@@ -168,7 +168,7 @@ print(output_filename)
 
 # Selecting where to save it:
 # Generate a folder within input
-destination_folder <- paste0("input/cmems")
+destination_folder <- paste0("R/input/cmems")
 if (!dir.exists(destination_folder)) dir.create(destination_folder, recursive = TRUE)
 print(destination_folder)
 
@@ -236,11 +236,11 @@ head(df)
 # Define the catalog subset you want:
 cat <- catalog
 head(cat)
-cat <- catalog %>%
-  filter(dimensions %in% c("2D")) 
+#cat <- catalog %>%
+#  filter(dimensions %in% c("2D")) 
 
 # Create folder where you are going to save to files:
-destination_folder <- paste0("input/cmems")
+destination_folder <- paste0("R/input/cmems")
 if (!dir.exists(destination_folder)) dir.create(destination_folder, recursive = TRUE)
 
 t <- Sys.time()
