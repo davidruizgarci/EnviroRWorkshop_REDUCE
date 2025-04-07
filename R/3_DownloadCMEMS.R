@@ -16,6 +16,9 @@ data <- read.csv2("R/input/dataset.csv", sep = ";")
 View(data)
 head(data)
 
+# How many dates do we have?
+# Response:
+
 
 # Plot data to have a reference:
 library(rnaturalearth)
