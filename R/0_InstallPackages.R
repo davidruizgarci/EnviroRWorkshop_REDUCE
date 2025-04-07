@@ -30,7 +30,7 @@ reticulate::use_virtualenv("cmems", required = TRUE)
 # load package / import library (py)
 cm <- import("copernicusmarine")
 # log in in your CMEMS user (you should have another script with this info)
-cm$login(username, password)
+#cm$login(username, password)
 # for session yes == y
-y
+#y
 
