@@ -9,18 +9,16 @@
 #
 #-------------------------------------------------------------------------------
 
-# A stack is a unique file that contains a collection of multiple netCDFs that share the same spatial resolution and coverage (lon and lat), .
+# A stack is a unique file that contains a collection of multiple netCDFs 
+# that share the same spatial resolution and coverage (lon and lat).
 # but they may differ in any or all of the other dimensions:
 # - time
 # - variable
 # - depth
 
-# In this case our stack will have a the following shared dimensions: 
-# (1) lon
-# (2) lat
-# (3) time
-# (4) depth
-# but different variables (SST and CHL)
+# In this case our stack will have the following
+# shared dimensions: time and depth
+# different dimension: variables (SST and CHL)
 
 
 # 1. Prepare netCDFs------------------------------------------------------------
@@ -36,19 +34,22 @@ print(CHL_2D)
 plot(CHL_2D)
 
 # Make sure they are in the same spatial resolution and extent
-# Spatial coverage has to be the smallest: they are equal and it is not necessary
+# Spatial coverage has to be the smallest.
+# In this case, they are equal and it is not necessary
 # CHL_2D <- raster::crop(SST_2D, CHL_2D)
 
-# Resolution has to be the broadest: we have SST with 0.083 and CHL with 0.25
+# Resolution has to be the broadest (if used for predictions): 
+# We have SST with 0.083º and CHL with 0.25º
 # there are different resampling methods:
 # 1. method = "bilinear" (Bilinear Interpolation)
 # - Uses the weighted average of the four nearest neighboring cells.
 # - Produces smooth results, reducing abrupt changes.
-# - Best for continuous data (e.g., temperature, elevation, precipitation).
+# - Use for continuous data (e.g., temperature, elevation, precipitation).
+
 # 2. method = "ngb" (Nearest Neighbor)
 # - Assigns the value of the nearest original pixel.
-# - Keeps discrete values unchanged (e.g., land cover classes, categorical data).
-# - Faster than bilinear interpolation but can introduce blocky artifacts.
+# - Keeps discrete values unchanged 
+# - Use for categorical data (e.g., sea substrate type)
 
 SST_2D_resampled <- raster::resample(SST_2D, CHL_2D, method="bilinear")
 print(SST_2D_resampled)
@@ -107,6 +108,13 @@ source("0_customfunctions.R")
 # output path to for stack:
 output_folder <- paste0("input/cmems/2024/12/25/stack")
 
+# The custom function (prepareStackForDay) uses the following parameters that 
+# you need to provide (you can check it out but it is not necessary):
+# - day_folder: the path to where netCDFs are
+# - variables: names selected from catalog
+# - res: desired resolution
+# - e: desired extent
+# - output_folder: where to save it
 prepareStackForDay(day_folder, variables, res, e, output_folder)
 
 

@@ -42,16 +42,16 @@ head(cat)
 source("0_customfunctions.R")
 
 # Repository to folder where netCDFs are:
-repo <- paste0(input_data, "/cmems") 
+repo <- paste0("input/cmems") 
 # Get the ID(s) of the product(s) you are going to extract data from:
 productid <- cat$id_product[1]
 
 # The custom function (cmems3d_all) uses the following parameters that you need to provide:
-# data        Your dataset
+# data        Your dataset name
 # lon         longitude column in your dataset
 # lat         latitude column in your dataset
 # date        POSIXct date time or Date column in your dataset
-# id          identificator of each observation/position/tow column in your dataset
+# id          identification column for each observation/position/fishing operation in your dataset
 # depth       depth value, in meters (positive) column in your dataset
 # productid   id of the product from catalog table. This is used to find the netcdf file from the repository (repo)
 # repo        repository path with netcdf files. 
