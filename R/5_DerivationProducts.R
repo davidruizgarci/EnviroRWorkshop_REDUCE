@@ -54,10 +54,12 @@ plot(r_grad)
 # import u component
 # horizontal flow speed of water in an east-west direction
 u <- raster("input/uo_Analysis_2024-12-25.nc") 
+plot(u)
 
 # import v component
 # vertical flow speed of water in a north-south direction
 v <- raster("input/vo_Analysis_2024-12-25.nc")
+plot(v)
 
 # calculate the eddy kinetic energy (EKE)
 eke <- (u^2 + v^2)/2
